@@ -3,6 +3,7 @@
 extern crate sapper;
 
 use sapper::header::{Cookie, CookiePair};
+use sapper::header::SetCookie;
 
 use sapper::{Request, Response, Result, Key};
 
@@ -51,7 +52,15 @@ pub fn process(req: &mut Request, ckey: &str) -> Result<()> {
 // }
 
 // library function
-pub fn set_cookie(res: &mut Response) -> Result<()> {
+pub fn set_cookie(res: &mut Response, ckey: &str, val: &str, path: Option<String>, max_age: Option<u64>, ) -> Result<()> {
+    
+    let mut ck = CookiePair::new(ckey.to_owned(), val.to_owned());
+    ck.path = path;
+    ck.max_age = max_age;
+    
+    println!("{:?}", ck);
+    
+    res.headers_mut().set(SetCookie(vec![ck]));
     
     Ok(())
 }

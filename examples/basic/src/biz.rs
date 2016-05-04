@@ -9,6 +9,7 @@ use sapper::SRouter;
 pub struct Biz;
 
 use sapper_cookie::SAppCookie;
+use sapper_cookie::set_cookie;
 
 impl Biz {
     // those handlers in module Biz
@@ -35,6 +36,8 @@ impl Biz {
         
         let mut response = Response::new();
         response.write_body("hello, I'am !".to_string());
+        
+        set_cookie(&mut response, "TestSApp", "99999999837343743432xxxyyyzzz", None, None);
         
         Ok(response)
     }
