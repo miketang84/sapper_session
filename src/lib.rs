@@ -7,8 +7,8 @@ use sapper::header::SetCookie;
 
 use sapper::{Request, Response, Result, Key};
 
-pub struct SAppCookie;
-impl Key for SAppCookie { type Value = String; }
+pub struct SessionCookie;
+impl Key for SessionCookie { type Value = String; }
 
 pub fn process(req: &mut Request, ckey: &str) -> Result<()> {
     
@@ -34,7 +34,7 @@ pub fn process(req: &mut Request, ckey: &str) -> Result<()> {
     }
     
     cookie_value.and_then(|val| {
-        req.ext_mut().insert::<SAppCookie>(val);
+        req.ext_mut().insert::<SessionCookie>(val);
         Some(())
     });
     

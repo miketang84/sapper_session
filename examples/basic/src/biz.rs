@@ -8,7 +8,7 @@ use sapper::SRouter;
 #[derive(Clone)]
 pub struct Biz;
 
-use sapper_cookie::SAppCookie;
+use sapper_cookie::SessionCookie;
 use sapper_cookie::set_cookie;
 
 impl Biz {
@@ -22,7 +22,7 @@ impl Biz {
     }
     
     fn test(req: &mut Request) -> Result<Response> {
-        println!("{:?}", req.ext().get::<SAppCookie>());
+        println!("{:?}", req.ext().get::<SessionCookie>());
         
         let mut response = Response::new();
         response.write_body("hello, tang gang gang!".to_string());
