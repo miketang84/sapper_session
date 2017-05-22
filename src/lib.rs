@@ -1,66 +1,67 @@
 
-
+extern crate cookie;
 extern crate sapper;
 
-use sapper::header::{Cookie, CookiePair};
-use sapper::header::SetCookie;
-
+use sapper::header::{Cookie, SetCookie};
 use sapper::{Request, Response, Result, Key};
+use cookie::Cookie as Cookie_M;
 
-pub struct SessionCookie;
-impl Key for SessionCookie { type Value = String; }
 
-pub fn process(req: &mut Request, ckey: &str) -> Result<()> {
+pub struct SessionVal;
+impl Key for SessionVal { type Value = String; }
+
+pub fn session_val(req: &mut Request, ckey: &'static str) -> Result<()> {
     
-    let mut cookie_value: Option<String> = None;
+    let mut session_value: Option<String> = None;
     match req.headers().get::<Cookie>() {
-        Some(ref value) => {
-            let Cookie(ref ckvec) = **value;
-            let cookie_vec = ckvec.iter()
-                                .filter(|item: &&CookiePair| item.name == ckey.to_owned())
-                                .take(1)
-                                .collect::<Vec<&CookiePair>>();
+        Some(cookie_headers) => {
             
-            if cookie_vec.len() == 1 {
-                let cookie_obj = cookie_vec[0];
-                cookie_value = Some(cookie_obj.value.clone());
+            //let mut cookie_jar = CookieJar::new();
+            for header in cookie_headers.iter() {
+                let raw_str = match ::std::str::from_utf8(&header.as_bytes()) {
+                    Ok(string) => string,
+                    Err(_) => continue
+                };
+
+                for cookie_str in raw_str.split(";").map(|s| s.trim()) {
+                    if let Ok(cookie) = Cookie_M::parse(cookie_str) {
+                        if cookie.name() == ckey {
+                            session_value = Some(cookie.value().to_owned());
+                            break;
+                        }
+                    }
+                }
             }
-            
-            
         },
         None => {
             println!("no cookie in headers");
         }
     }
     
-    cookie_value.and_then(|val| {
-        req.ext_mut().insert::<SessionCookie>(val);
+    session_value.and_then(|val| {
+        req.ext_mut().insert::<SessionVal>(val);
         Some(())
     });
-    
-    // if cookie_value.is_some() {
-    //     req.ext_mut().insert::<SAppCookieValue>(cookie_value.unwrap());
-    // }
-    
+
     Ok(())
 }
 
-
-// pub fn make_uuid() -> String {
-    
-    
-// }
-
 // library function
-pub fn set_cookie(res: &mut Response, ckey: &str, val: &str, path: Option<String>, max_age: Option<u64>, ) -> Result<()> {
+pub fn set_cookie(res: &mut Response, ckey: String, val: String, domain: Option<String>, path: Option<String>, secure: Option<bool>, max_age: Option<u64>) -> Result<()> {
+    let mut cookie = Cookie_M::new(ckey, val);
+    if domain.is_some() {
+        cookie.set_domain(domain.unwrap());
+    }
+    if path.is_some() {
+        cookie.set_path(path.unwrap());
+    }
+    if secure.is_some() {
+        cookie.set_secure(secure.unwrap());
+    }
     
-    let mut ck = CookiePair::new(ckey.to_owned(), val.to_owned());
-    ck.path = path;
-    ck.max_age = max_age;
+    println!("{:?}", cookie);
     
-    println!("{:?}", ck);
-    
-    res.headers_mut().set(SetCookie(vec![ck]));
+    res.headers_mut().set(SetCookie(vec![cookie.to_string()]));
     
     Ok(())
 }
