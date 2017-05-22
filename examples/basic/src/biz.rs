@@ -8,8 +8,8 @@ use sapper::SapperRouter;
 #[derive(Clone)]
 pub struct Biz;
 
-use sapper_cookie::SessionVal;
-use sapper_cookie::set_cookie;
+use sapper_session::SessionVal;
+use sapper_session::set_cookie;
 
 impl Biz {
     // those handlers in module Biz

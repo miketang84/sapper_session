@@ -1,12 +1,12 @@
 
 extern crate sapper;
-extern crate sapper_cookie;
+extern crate sapper_session;
 extern crate env_logger;
 #[macro_use]
 extern crate log;
 
 use sapper::{SapperApp, SapperAppShell, Request, Response, Result};
-use sapper_cookie::session_val;
+use sapper_session::session_val;
 
 
 mod biz;
