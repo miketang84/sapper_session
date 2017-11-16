@@ -1,4 +1,4 @@
-
+#![allow(unused_imports)]
 extern crate sapper;
 extern crate sapper_session;
 extern crate env_logger;
@@ -21,12 +21,12 @@ struct MyApp;
 impl SapperAppShell for MyApp {
     fn before(&self, req: &mut Request) -> Result<()> {
         println!("{}", "in SapperAppShell before.");
-        session_val(req, "TestKey");
+        let _ = session_val(req, "TestSApp");
         
         Ok(())
     }
     
-    fn after(&self, req: &Request, res: &mut Response) -> Result<()> {
+    fn after(&self, _req: &Request, _res: &mut Response) -> Result<()> {
         println!("{}", "in SapperAppShell after.");
         
         Ok(())

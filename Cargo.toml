@@ -11,5 +11,5 @@ homepage = "https://github.com/sappworks/sapper_session"
 
 [dependencies]
 sapper = "0.1"
-cookie = "0.8.1"
-
+cookie = "^0.10.1"
+time = "^0.1"

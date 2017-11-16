@@ -13,7 +13,7 @@ use sapper_session::set_cookie;
 
 impl Biz {
     // those handlers in module Biz
-    fn index(req: &mut Request) -> Result<Response> {
+    fn index(_req: &mut Request) -> Result<Response> {
         
         let mut response = Response::new();
         response.write_body("hello, boy!".to_string());
@@ -27,7 +27,7 @@ impl Biz {
         let mut response = Response::new();
         response.write_body("hello, test!".to_string());
         
-        set_cookie(&mut response, "TestSApp".to_string(), "99999999837343743432xxxyyyzzz".to_string(), None, None, None, None);
+        let _ = set_cookie(&mut response, "TestSApp".to_string(), "99999999837343743432xxxyyyzzz".to_string(), None, None, None, None);
         
         Ok(response)
     }
@@ -47,12 +47,12 @@ impl Biz {
 // set before, after middleware, and add routers
 impl SapperModule for Biz {
     
-    fn before(&self, req: &mut Request) -> Result<()> {
+    fn before(&self, _req: &mut Request) -> Result<()> {
         println!("{}", "in Biz before.");
         Ok(())
     }
     
-    fn after(&self, req: &Request, res: &mut Response) -> Result<()> {
+    fn after(&self, _req: &Request, _res: &mut Response) -> Result<()> {
         println!("{}", "in Biz after.");
         
         Ok(())
