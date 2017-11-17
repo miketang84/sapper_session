@@ -1,6 +1,7 @@
 
 extern crate cookie;
 extern crate sapper;
+extern crate time;
 
 use sapper::header::{Cookie, SetCookie};
 use sapper::{Request, Response, Result, Key};
@@ -47,7 +48,7 @@ pub fn session_val(req: &mut Request, ckey: &'static str) -> Result<()> {
 }
 
 // library function
-pub fn set_cookie(res: &mut Response, ckey: String, val: String, domain: Option<String>, path: Option<String>, secure: Option<bool>, max_age: Option<u64>) -> Result<()> {
+pub fn set_cookie(res: &mut Response, ckey: String, val: String, domain: Option<String>, path: Option<String>, secure: Option<bool>, max_age: Option<i64>) -> Result<()> {
     let mut cookie = Cookie_M::new(ckey, val);
     if domain.is_some() {
         cookie.set_domain(domain.unwrap());
@@ -58,8 +59,9 @@ pub fn set_cookie(res: &mut Response, ckey: String, val: String, domain: Option<
     if secure.is_some() {
         cookie.set_secure(secure.unwrap());
     }
-    
-    println!("{:?}", cookie);
+    if max_age.is_some() {
+        cookie.set_max_age(time::Duration::hours(max_age.unwrap()))
+    }
     
     res.headers_mut().set(SetCookie(vec![cookie.to_string()]));
     
