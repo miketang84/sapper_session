@@ -11,12 +11,14 @@ use cookie::Cookie as Cookie_M;
 pub struct SessionVal;
 impl Key for SessionVal { type Value = String; }
 
-pub fn session_val(req: &mut Request, ckey: &'static str) -> Result<()> {
-    
+pub fn session_val(req: &mut Request, ckey: Option<&'static str>) -> Result<()> {
+    if ckey.is_none() {
+        return Ok(());
+    }
+
     let mut session_value: Option<String> = None;
     match req.headers().get::<Cookie>() {
         Some(cookie_headers) => {
-            
             //let mut cookie_jar = CookieJar::new();
             for header in cookie_headers.iter() {
                 let raw_str = match ::std::str::from_utf8(&header.as_bytes()) {
@@ -26,7 +28,7 @@ pub fn session_val(req: &mut Request, ckey: &'static str) -> Result<()> {
 
                 for cookie_str in raw_str.split(";").map(|s| s.trim()) {
                     if let Ok(cookie) = Cookie_M::parse(cookie_str) {
-                        if cookie.name() == ckey {
+                        if cookie.name() == ckey.unwrap() {
                             session_value = Some(cookie.value().to_owned());
                             break;
                         }
