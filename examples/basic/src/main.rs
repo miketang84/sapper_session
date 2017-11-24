@@ -21,7 +21,7 @@ struct MyApp;
 impl SapperAppShell for MyApp {
     fn before(&self, req: &mut Request) -> Result<()> {
         println!("{}", "in SapperAppShell before.");
-        let _ = session_val(req, "TestSApp");
+        let _ = session_val(req, Some("TestSApp"));
         
         Ok(())
     }
