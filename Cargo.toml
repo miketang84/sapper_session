@@ -1,6 +1,6 @@
 [package]
 name = "sapper_session"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Mike Tang <miketang84@outlook.com>"]
 license = "MIT"
 description = "Session plugin for sapper framework."
